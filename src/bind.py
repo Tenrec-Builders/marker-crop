@@ -9,7 +9,7 @@ def makeDirs(root):
 # process in the target path
 def findImages(root):
   result = []
-  valid = re.compile('^[0-9]+.jpg$')
+  valid = re.compile('^[0-9]+.[jJ][pP][eE]?[gG]$')
   all = os.listdir(root)
   for filename in all:
     path = os.path.join(root, filename)
