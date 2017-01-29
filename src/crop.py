@@ -9,21 +9,21 @@ MARKER_ODD_TOP = 3
 
 markerDictionary = aruco.Dictionary_create(4, 5)
 
-borderWidth = 15
+borderWidth = 50
 
 # Transpose and flip the image as specified. Also transpose and flip
-# the corner coordinates in the same way so we don't have to
+# the marker coordinates in the same way so we don't have to
 # recalculate them.
-def transposeFlipCorners(shouldTranspose, flipType, image, corners):
+def transposeFlipMarkers(shouldTranspose, flipType, image, markers):
   if shouldTranspose:
     image = cv2.transpose(image)
-    for box in corners:
+    for box in markers:
       for point in box[0]:
         temp = point[0]
         point[0] = point[1]
         point[1] = temp
   rows, cols, z = image.shape
-  for box in corners:
+  for box in markers:
     for point in box[0]:
       if flipType == 0 or flipType < 0:
         point[1] = rows - point[1]
@@ -32,18 +32,20 @@ def transposeFlipCorners(shouldTranspose, flipType, image, corners):
   cv2.flip(image, flipType, image)
   return image
 
-# Rotate both the image and the corners so that the example is facing
+# Rotate both the image and the markers so that the example is facing
 # the right direction. Only rotate 0, 90, 180, or 270 degrees.
-def rotateImage(example, image, corners):
+def rotateImage(example, image, markers):
   angleRad = math.atan2(example[3][1] - example[0][1],
                         example[3][0] - example[0][0]) - math.pi/2
   angle = angleRad * 180 / math.pi
-  if angle > 70 and angle < 110:
-    image = transposeFlipCorners(True, 0, image, corners)
-  elif angle > 160 and angle < 200:
-    image = transposeFlipCorners(False, -1, image, corners)
-  elif (angle > 250 and angle < 290) or (angle > -110 and angle < -70):
-    image = transposeFlipCorners(True, 1, image, corners)
+  if angle < 0:
+    angle += 360
+  if angle >= 45 and angle < 135:
+    image = transposeFlipMarkers(True, 0, image, markers)
+  elif angle >= 135 and angle < 225:
+    image = transposeFlipMarkers(False, -1, image, markers)
+  elif angle >= 225:
+    image = transposeFlipMarkers(True, 1, image, markers)
   return image
 
 # Completely process an image, rotating it so the tokens face upwards
@@ -52,16 +54,16 @@ def process(image):
   gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
   parameters = aruco.DetectorParameters_create()
 
-  corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, markerDictionary,
+  markers, ids, rejectedImgPoints = aruco.detectMarkers(gray, markerDictionary,
                                                         parameters=parameters)
 
   isOdd = calculateOdd(ids)
-  sides = findSides(corners, ids, isOdd)
-  topBottom = findTopBottom(corners, ids, isOdd)
+  sides = findSides(markers, ids, isOdd)
+  topBottom = findTopBottom(markers, ids, isOdd)
   if len(sides) != 2 or len(topBottom) != 2:
     sys.stderr.write("Error finding markers!\n")
     exit(1)
-  image = rotateImage(sides[0], image, corners)
+  image = rotateImage(sides[0], image, markers)
 
   leftBorder, rightBorder = processSides(sides, isOdd)
   topBorder, bottomBorder = processTopBottom(topBottom)
@@ -78,22 +80,22 @@ def calculateOdd(ids):
       oddCount += 1
   return oddCount >= evenCount
 
-# Search through the ids and return the side corner lists
-def findSides(corners, ids, isOdd):
+# Search through the ids and return the side marker lists
+def findSides(markers, ids, isOdd):
   result = []
   for i in xrange(0, len(ids)):
     if ((isOdd and ids[i] == MARKER_ODD_SIDE) or
         (not isOdd and ids[i] == MARKER_EVEN_SIDE)):
-      result.append(corners[i][0])
+      result.append(markers[i][0])
   return result
 
-# Search through the ids and return the top and bottom corner lists
-def findTopBottom(corners, ids, isOdd):
+# Search through the ids and return the top and bottom marker lists
+def findTopBottom(markers, ids, isOdd):
   result = []
   for i in xrange(0, len(ids)):
     if ((isOdd and ids[i] == MARKER_ODD_TOP) or
         (not isOdd and ids[i] == MARKER_EVEN_TOP)):
-      result.append(corners[i][0])
+      result.append(markers[i][0])
   return result
 
 # Take the two side tokens and figure out which is left and
@@ -106,11 +108,11 @@ def processSides(sides, isOdd):
     left = right
     right = temp
   if isOdd:
-    leftBorder = max(left[0][0], left[3][0]) + borderWidth
+    leftBorder = max(left[0][0], left[3][0]) - borderWidth
     rightBorder = min(right[0][0], right[3][0]) - borderWidth
   else:
     leftBorder = max(left[1][0], left[2][0]) + borderWidth
-    rightBorder = min(right[1][0], right[2][0]) - borderWidth
+    rightBorder = min(right[1][0], right[2][0]) + borderWidth
   return int(leftBorder), int(rightBorder)
 
 # Take the two top/bottom tokens and figure out which is the top and
