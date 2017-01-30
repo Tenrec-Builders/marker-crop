@@ -9,7 +9,7 @@ MARKER_ODD_TOP = 3
 
 markerDictionary = aruco.Dictionary_create(4, 5)
 
-borderWidth = 50
+borderWidth = 85
 
 # Transpose and flip the image as specified. Also transpose and flip
 # the marker coordinates in the same way so we don't have to
