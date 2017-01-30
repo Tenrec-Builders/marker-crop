@@ -22,10 +22,10 @@ is ready for a human to read as a book.
 
 The most basic kind of post-processing involves four steps:
 
-   1 Interleaving the odd and even page captures to provide a single image list. This is currently done when scanning with Pi Scan.
-   1 Rotate each photograph 90, 180, or 270 degrees if necessary so that the images can easily be read. Odd and even pages typically need different rotations.
-   1 Crop each photograph to the page or content scanned.
-   1 Bind all the photographs into an easy to read book file like a PDF.
+1. Interleaving the odd and even page captures to provide a single image list. This is currently done when scanning with Pi Scan.
+1. Rotate each photograph 90, 180, or 270 degrees if necessary so that the images can easily be read. Odd and even pages typically need different rotations.
+1. Crop each photograph to the page or content scanned.
+1. Bind all the photographs into an easy to read book file like a PDF.
 
 There are a number of variations and extra steps that could be added
 to this process depending on individual needs. But almost everyone
@@ -52,9 +52,9 @@ is automated and painless.
 
 First you will need some markers:
 
-   1 Download and print out the [Marker Label Sheet](https://github.com/Tenrec-Builders/marker-crop/raw/master/labels/label-print.pdf) on cardstock.
-   1 Cut out the labels along the light gray lines.
-   1 Cover the back of each label with electrical tape. Try to get one even layer of tape. Use a craft knife to trim any excess tape around the edges.
+1. Download and print out the [Marker Label Sheet](https://github.com/Tenrec-Builders/marker-crop/raw/master/labels/label-print.pdf) on cardstock.
+1. Cut out the labels along the light gray lines.
+1. Cover the back of each label with electrical tape. Try to get one even layer of tape. Use a craft knife to trim any excess tape around the edges.
 
 Now you can press the markers against a gently sloping glass platen and they will stick slightly to the glass. Press the marker against the glass firmly and try to firmly adhere all parts of the back of the label to the glass.
 
