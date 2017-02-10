@@ -15,6 +15,7 @@ borderWidth = 85
 # the marker coordinates in the same way so we don't have to
 # recalculate them.
 def transposeFlipMarkers(shouldTranspose, flipType, image, markers):
+  cols, rows, z = image.shape
   if shouldTranspose:
     image = cv2.transpose(image)
     for box in markers:
@@ -22,7 +23,6 @@ def transposeFlipMarkers(shouldTranspose, flipType, image, markers):
         temp = point[0]
         point[0] = point[1]
         point[1] = temp
-  rows, cols, z = image.shape
   for box in markers:
     for point in box[0]:
       if flipType == 0 or flipType < 0:
@@ -62,11 +62,18 @@ def process(image):
   topBottom = findTopBottom(markers, ids, isOdd)
   if len(sides) != 2 or len(topBottom) != 2:
     sys.stderr.write("Error finding markers!\n")
+    aruco.drawDetectedMarkers(image, markers, ids)
+    cv2.imwrite("debug.jpg", image)
+    print sides, topBottom
     exit(1)
   image = rotateImage(sides[0], image, markers)
 
   leftBorder, rightBorder = processSides(sides, isOdd)
   topBorder, bottomBorder = processTopBottom(topBottom)
+  leftBorder = max(leftBorder, 0)
+  topBorder = max(topBorder, 0)
+  rightBorder = min(rightBorder, image.shape[1])
+  bottomBorder = min(bottomBorder, image.shape[0])
   return image[topBorder:bottomBorder, leftBorder:rightBorder]
 
 # Figure out if we are processing an odd page (True) or an even page (False)
