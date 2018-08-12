@@ -1,13 +1,14 @@
 import cv2
 import cv2.aruco as aruco
 import sys, math
+from make_markers import createDict
 
 MARKER_EVEN_SIDE = 0
 MARKER_EVEN_TOP = 1
 MARKER_ODD_SIDE = 2
 MARKER_ODD_TOP = 3
 
-markerDictionary = aruco.Dictionary_create(4, 5)
+markerDictionary = createDict()
 
 borderWidth = 85
 
