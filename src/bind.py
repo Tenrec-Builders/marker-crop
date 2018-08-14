@@ -23,7 +23,7 @@ def cropAll(root):
   imageList = findImages(root)
   for image in imageList:
     imageOut = re.sub(r'(.[jJ][pP][eE]?[gG])$', '.jpg', image)
-    os.system("python crop.py " + os.path.join(root, image) + " " + os.path.join(root, "cropped", imageOut))
+    os.system("python2 crop.py " + os.path.join(root, image) + " " + os.path.join(root, "cropped", imageOut))
 
 # Bind cropped files into a PDF
 def bindAll(root):
