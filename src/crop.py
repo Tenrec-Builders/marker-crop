@@ -136,6 +136,11 @@ def processTopBottom(topBottom):
   bottomBorder = min(bottom[0][1], bottom[1][1]) - borderWidth
   return int(topBorder), int(bottomBorder)
 
+def crop(inFile, outFile):
+  image = cv2.imread(inFile)
+  result = process(image)
+  cv2.imwrite(outFile, result)
+
 def main():
   if len(sys.argv) != 3:
     sys.stderr.write("Usage: crop <infile> <outfile>\n")
@@ -143,8 +148,7 @@ def main():
   else:
     inFile = sys.argv[1]
     outFile = sys.argv[2]
-    image = cv2.imread(inFile)
-    result = process(image)
-    cv2.imwrite(outFile, result)
+    crop(inFile, outFile)
 
-main()
+if __name__ == '__main__':
+  main()
